@@ -12,6 +12,12 @@ def tellthedomain(url):
     itsdomain = whois.whois(url)
 
 def download(urll):
-    return urlib2.urlopen(url).read()
+    print('Downloading:%s'%url)
+    try:
+        html = urllib2.urlopen(url).read()
+    except urllib2.URLError as e:
+        print('Download error:%s'%e.reason)
+        html = None
+    return html
 
 
