@@ -1,22 +1,28 @@
-mport re
-import urlparse
-import urllib2
+# -*- coding: utf-8 -*-
+
+import re
+import queue
 import time
+from common import download
+from urllib import request 
+from urllib import robotparser
+from urllib.parse import urljoin
+from urllib.parse import urlparse
 from datetime import datetime
-import robotparser
-import Queue
 
 
 def link_crawler(seed_url, link_regex=None, delay=5, max_depth=-1, max_urls=-1, headers=None, user_agent='wswp', proxy=None, num_retries=1):
-    """Crawl from the given seed URL following links matched by link_regex
+    """
+    Crawl from the given seed URL following links matched by link_regex
     """
     # the queue of URL's that still need to be crawled
-    crawl_queue = Queue.deque([seed_url])
+    print(seed_url)
+    crawl_queue = queue.deque([seed_url])
     # the URL's that have been seen and at what depth
     seen = {seed_url: 0}
     # track how many URL's have been downloaded
     num_urls = 0
-    rp = get_robots(seed_url)
+    rp = Throttle.get_robots(seed_url)
     throttle = Throttle(delay)
     headers = headers or {}
     if user_agent:
@@ -55,12 +61,13 @@ def link_crawler(seed_url, link_regex=None, delay=5, max_depth=-1, max_urls=-1, 
             if num_urls == max_urls:
                 break
             else:
-                print 'Blocked by robots.txt:', url
+                print('Blocked by robots.txt:%s'%url)
 
 
 
 class Throttle:
-    """Throttle downloading by sleeping between requests to same domain
+    """
+    Throttle downloading by sleeping between requests to same domain
     """
     def __init__(self, delay):
         # amount of delay between downloads for each domain
@@ -70,7 +77,7 @@ class Throttle:
 
 
     def wait(self, url):
-        domain = urlparse.urlparse(url).netloc
+        domain = urlparse(url).netloc
         last_accessed = self.domains.get(domain)
 
 
@@ -82,20 +89,20 @@ class Throttle:
 
 
     def download(url, headers, proxy, num_retries, data=None): 
-        print 'Downloading:', url
-        request = urllib2.Request(url, data, headers)
-        opener = urllib2.build_opener()
+        print('Downloading:%s'%url)
+        request = request.Request(url, data, headers)
+        opener = request.build_opener()
         if proxy:
             proxy_params = {urlparse.urlparse(url).scheme: proxy}
-            opener.add_handler(urllib2.ProxyHandler(proxy_params))
+            opener.add_handler(request.ProxyHandler(proxy_params))
 
         try:
             response = opener.open(request)
             html = response.read()
             code = response.code
 
-        except urllib2.URLError as e:
-            print 'Download error:', e.reason
+        except request.URLError as e:
+            print('Download error:%s'%e.reason)
             html = ''
             if hasattr(e, 'code'):
                 code = e.code
@@ -109,26 +116,30 @@ class Throttle:
 
 
     def normalize(seed_url, link):
-        """Normalize this URL by removing hash and adding domain
-            """
+        """
+        Normalize this URL by removing hash and adding domain
+        """
         link, _ = urlparse.urldefrag(link) # remove hash to avoid duplicates
         return urlparse.urljoin(seed_url, link)
 
     def same_domain(url1, url2):
-        """Return True if both URL's belong to same domain
+        """
+        Return True if both URL's belong to same domain
         """
         return urlparse.urlparse(url1).netloc == urlparse.urlparse(url2).netloc
 
     def get_robots(url):
-        ""Initialize robots parser for this domain
+        """
+        Initialize robots parser for this domain
         """
         rp = robotparser.RobotFileParser()
-        rp.set_url(urlparse.urljoin(url, '/robots.txt'))
+        rp.set_url(urljoin(url, '/robots.txt'))
         rp.read()
         return rp
 
     def get_links(html):
-        """Return a list of links from html 
+        """
+        Return a list of links from html 
         """
         # a regular expression to extract all links from the webpage
         webpage_regex = re.compile('<a[^>]+href=["\'](.*?)["\']', re.IGNORECASE)
