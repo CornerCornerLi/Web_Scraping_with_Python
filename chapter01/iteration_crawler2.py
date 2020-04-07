@@ -6,7 +6,7 @@ from common import download
 
 
 def iteration():
-    max_errors = 5 # maximum number of consecutive download errors allowed
+    max_errors = 10 # maximum number of consecutive download errors allowed
     num_errors = 0 # current number of consecutive download errors
     for page in itertools.count(1):
         url = 'http://example.webscraping.com/view/-{}'.format(page)
