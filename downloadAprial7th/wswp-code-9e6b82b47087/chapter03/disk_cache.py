@@ -1,8 +1,9 @@
 import os
 import re
-import urlparse
 import shutil
 import zlib
+from urllib.parse import urlparse
+from urllib.parse import urlsplit
 from datetime import datetime, timedelta
 try:
     import cPickle as pickle
@@ -90,7 +91,7 @@ class DiskCache:
     def url_to_path(self, url):
         """Create file system path for this URL
         """
-        components = urlparse.urlsplit(url)
+        components = urlsplit(url)
         # when empty path set to /index.html
         path = components.path
         if not path:

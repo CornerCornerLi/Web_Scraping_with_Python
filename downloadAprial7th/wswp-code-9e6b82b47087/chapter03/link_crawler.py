@@ -1,9 +1,10 @@
 import re
-import urlparse
-import urllib2
 import time
 import datetime
-import robotparser
+from urllib import request
+from urllib import robotparser
+from urllib.parse import urljoin
+from urllib.parse import urlparse
 from downloader import Downloader
 
 
@@ -50,7 +51,7 @@ def link_crawler(seed_url, link_regex=None, delay=5, max_depth=-1, max_urls=-1, 
             if num_urls == max_urls:
                 break
         else:
-            print 'Blocked by robots.txt:', url
+            print('Blocked by robots.txt:%s'% url)
 
 
 
@@ -58,7 +59,7 @@ def normalize(seed_url, link):
     """Normalize this URL by removing hash and adding domain
     """
     link, _ = urlparse.urldefrag(link) # remove hash to avoid duplicates
-    return urlparse.urljoin(seed_url, link)
+    return urljoin(seed_url, link)
 
 
 def same_domain(url1, url2):
@@ -71,7 +72,7 @@ def get_robots(url):
     """Initialize robots parser for this domain
     """
     rp = robotparser.RobotFileParser()
-    rp.set_url(urlparse.urljoin(url, '/robots.txt'))
+    rp.set_url(urljoin(url, '/robots.txt'))
     rp.read()
     return rp
         
