@@ -1,9 +1,12 @@
-import urlparse
-import urllib2
+
+
 import random
-import time
-from datetime import datetime, timedelta
 import socket
+import time
+from urllib import request
+from urllib.parse import urlparse
+from urllib.parse import urlsplit
+from datetime import datetime, timedelta
 
 
 DEFAULT_AGENT = 'wswp'
@@ -48,18 +51,18 @@ class Downloader:
 
 
     def download(self, url, headers, proxy, num_retries, data=None):
-        print 'Downloading:', url
-        request = urllib2.Request(url, data, headers or {})
-        opener = self.opener or urllib2.build_opener()
+        print('Downloading: %s'% url)
+        newrequest = request.Request(url, data, headers or {})
+        opener = self.opener or request.build_opener()
         if proxy:
             proxy_params = {urlparse.urlparse(url).scheme: proxy}
-            opener.add_handler(urllib2.ProxyHandler(proxy_params))
+            opener.add_handler(request.ProxyHandler(proxy_params))
         try:
-            response = opener.open(request)
+            response = opener.open(newrequest)
             html = response.read()
             code = response.code
         except Exception as e:
-            print 'Download error:', str(e)
+            print('Download error: %s'% str(e))
             html = ''
             if hasattr(e, 'code'):
                 code = e.code
@@ -83,7 +86,7 @@ class Throttle:
     def wait(self, url):
         """Delay if have accessed this domain recently
         """
-        domain = urlparse.urlsplit(url).netloc
+        domain = urlsplit(url).netloc
         last_accessed = self.domains.get(domain)
         if self.delay > 0 and last_accessed is not None:
             sleep_secs = self.delay - (datetime.now() - last_accessed).seconds
