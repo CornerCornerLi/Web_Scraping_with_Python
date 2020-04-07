@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-import urllib2
+from urllib import request
 import re
 
 
@@ -10,5 +10,5 @@ def scrape(html):
 
 
 if __name__ == '__main__':
-    html = urllib2.urlopen('http://example.webscraping.com/view/United-Kingdom-239').read()
-    print scrape(html)
+    html = request.urlopen('http://example.webscraping.com/view/United-Kingdom-239').read()
+    print(scrape(html))
