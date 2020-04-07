@@ -2,8 +2,8 @@
 
 import csv
 import re
-import urlparse
 import lxml.html
+from urllib.parse import urlparse
 from link_crawler import link_crawler
 
 

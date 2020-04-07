@@ -2,7 +2,7 @@
 
 import csv
 import time
-import urllib2
+from urllib import request
 import re
 import timeit
 from bs4 import BeautifulSoup
@@ -36,7 +36,7 @@ def lxml_scraper(html):
 
 def main():
     times = {}
-    html = urllib2.urlopen('http://example.webscraping.com/view/United-Kingdom-239').read()
+    html = request.urlopen('http://example.webscraping.com/view/United-Kingdom-239').read()
     NUM_ITERATIONS = 1000 # number of times to test each scraper
     for name, scraper in ('Regular expressions', regex_scraper), ('Beautiful Soup', beautiful_soup_scraper), ('Lxml', lxml_scraper):
         times[name] = []
@@ -54,7 +54,7 @@ def main():
             times[name].append(time.time() - start)
         # record end time of scrape and output the total
         end = time.time()
-        print '{}: {:.2f} seconds'.format(name, end - start)
+        #print '{}: {:.2f} seconds'.format(name, end - start)
 
     writer = csv.writer(open('times.csv', 'w'))
     header = sorted(times.keys())
