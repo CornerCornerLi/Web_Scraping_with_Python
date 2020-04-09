@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from datetime import datetime, timedelta
 from pymongo import MongoClient, errors
 
@@ -88,7 +90,7 @@ class MongoQueue:
             update={'$set': {'status': self.OUTSTANDING}}
         )
         if record:
-            print 'Released:', record['_id']
+            print('Released:%s'% record['_id'])
 
     def clear(self):
         self.db.crawl_queue.drop()
