@@ -2,7 +2,7 @@
 
 import csv
 from zipfile import ZipFile
-from StringIO import StringIO
+from io import StringIO
 from downloader import Downloader
 
 
@@ -18,4 +18,4 @@ def alexa():
 
 
 if __name__ == '__main__':
-    print len(alexa())
+    print(len(alexa()))

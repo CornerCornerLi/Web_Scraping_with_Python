@@ -2,7 +2,7 @@
 
 import csv
 from zipfile import ZipFile
-from StringIO import StringIO
+from io import StringIO
 from mongo_cache import MongoCache
 
 

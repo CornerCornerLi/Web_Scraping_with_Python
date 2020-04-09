@@ -1,6 +1,9 @@
+# -*- coding: utf-8 -*-
+
+
 import time
 import threading
-import urlparse
+from urllib.parse import urlparse
 from downloader import Downloader
 
 SLEEP_TIME = 1
@@ -30,7 +33,7 @@ def threaded_crawler(seed_url, delay=5, cache=None, scrape_callback=None, user_a
                     try:
                         links = scrape_callback(url, html) or []
                     except Exception as e:
-                        print 'Error in callback for: {}: {}'.format(url, e)
+                        print('Error in callback for:%s'% e)
                     else:
                         for link in links:
                             link = normalize(seed_url, link)
