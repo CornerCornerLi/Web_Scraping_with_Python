@@ -2,18 +2,18 @@
 
 import sys
 import re
-import urllib2
-import urllib
+#import urllib2
+from urllib import request
 import time
 from io import BytesIO
-
+from urllib.parse import urlencode
 from PIL import Image
 from form import register
 
 
 def main(api_key, filename):
     captcha = CaptchaAPI(api_key)
-    print register('Test Account', 'Test Account', 'example@webscraping.com', 'example', captcha.solve)
+    print(register('Test Account', 'Test Account', 'example@webscraping.com', 'example', captcha.solve))
 
 
 class CaptchaError(Exception):
@@ -45,16 +45,16 @@ class CaptchaAPI:
                     if text == 'ERROR NO USER':
                         raise CaptchaError('Error: no user available to solve CAPTCHA')
                     else:
-                        print 'CAPTCHA solved!'
+                        print('CAPTCHA solved!')
                         return text
-            print 'Waiting for CAPTCHA ...'
+            print('Waiting for CAPTCHA ...')
         raise CaptchaError('Error: API timeout')
 
 
     def send(self, img_data):
         """Send CAPTCHA for solving
         """
-        print 'Submitting CAPTCHA'
+        print('Submitting CAPTCHA')
         data = {
             'action': 'usercaptchaupload',
             'apikey': self.api_key,
@@ -63,9 +63,9 @@ class CaptchaAPI:
             'selfsolve': '1',
             'maxtimeout': str(self.timeout)
         }
-        encoded_data = urllib.urlencode(data)
-        request = urllib2.Request(self.url, encoded_data)
-        response = urllib2.urlopen(request)
+        encoded_data = urlencode(data)
+        newrequest = request.Request(self.url, encoded_data)
+        response = request.urlopen(newrequest)
         result = response.read()
         self.check(result)
         return result
@@ -80,8 +80,8 @@ class CaptchaAPI:
             'apikey': self.api_key,
             'info': '1'
         }
-        encoded_data = urllib.urlencode(data)
-        response = urllib2.urlopen(self.url + '?' + encoded_data)
+        encoded_data = urlencode(data)
+        response = request.urlopen(self.url + '?' + encoded_data)
         result = response.read()
         self.check(result)
         return result
@@ -100,6 +100,6 @@ if __name__ == '__main__':
         api_key = sys.argv[1]
         filename = sys.argv[2]
     except IndexError:
-        print 'Usage: %s <API key> <Image filename>' % sys.argv[0]
+        print('Usage: %s <API key> <Image filename>' % sys.argv[0])
     else:
         main(api_key, filename)

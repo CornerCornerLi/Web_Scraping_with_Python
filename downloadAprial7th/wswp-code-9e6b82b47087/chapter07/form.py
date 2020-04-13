@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import urllib
-import urllib2
-import cookielib
+from  urllib import request
+#import urllib2
+#import cookielib
+import http.cookiejar as cookielib
 from io import BytesIO
 import lxml.html
 from PIL import Image
@@ -39,7 +40,7 @@ def parse_form(html):
 
 def register(first_name, last_name, email, password, captcha_fn):
     cj = cookielib.CookieJar()
-    opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+    opener = request.build_opener(request.HTTPCookieProcessor(cj))
     html = opener.open(REGISTER_URL).read()
     form = parse_form(html)
     form['first_name'] = first_name
@@ -50,7 +51,7 @@ def register(first_name, last_name, email, password, captcha_fn):
     captcha = captcha_fn(img)
     form['recaptcha_response_field'] = captcha
     encoded_data = urllib.urlencode(form)
-    request = urllib2.Request(REGISTER_URL, encoded_data)
-    response = opener.open(request)
+    newrequest = request.Request(REGISTER_URL, encoded_data)
+    response = opener.open(newrequest)
     success = '/user/register' not in response.geturl()
     return success
