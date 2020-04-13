@@ -29,7 +29,7 @@ def main():
         app.processEvents()
         elements = frame.findAllElements('#results a')
     countries = [e.toPlainText().strip() for e in elements]
-    print countries
+    print(countries)
 
 
 if __name__ == '__main__':

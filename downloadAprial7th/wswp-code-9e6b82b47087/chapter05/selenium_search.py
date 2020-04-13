@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from selenium import webdriver
 
 
@@ -11,7 +13,7 @@ def main():
     links = driver.find_elements_by_css_selector('#results a')
     countries = [link.text for link in links]
     driver.close()
-    print countries
+    print(countries)
 
 
 if __name__ == '__main__':
