@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
 
 
-import urllib
-import urllib2
+from urllib import request
 import glob
 import sqlite3
 import os
-import cookielib
+#import cookielib
+import http.cookiejar as cookielib
 import json
 import time
 import lxml.html
-
+from urllib.parse import urlencode
 
 LOGIN_EMAIL = 'example@webscraping.com'
 LOGIN_PASSWORD = 'example'
@@ -21,38 +21,38 @@ def login_basic():
     """fails because not using formkey
     """
     data = {'email': LOGIN_EMAIL, 'password': LOGIN_PASSWORD}
-    encoded_data = urllib.urlencode(data)
-    request = urllib2.Request(LOGIN_URL, encoded_data)
-    response = urllib2.urlopen(request)
-    print response.geturl()
+    encoded_data = urlencode(data)
+    newrequest = request.Request(LOGIN_URL, encoded_data)
+    response = request.urlopen(newrequest)
+    print(response.geturl())
 
 
 def login_formkey():
     """fails because not using cookies to match formkey
     """
-    html = urllib2.urlopen(LOGIN_URL).read()
+    html = request.urlopen(LOGIN_URL).read()
     data = parse_form(html)
     data['email'] = LOGIN_EMAIL
     data['password'] = LOGIN_PASSWORD
-    encoded_data = urllib.urlencode(data)
-    request = urllib2.Request(LOGIN_URL, encoded_data)
-    response = urllib2.urlopen(request)
-    print response.geturl()
+    encoded_data = urlencode(data)
+    newrequest = request.Request(LOGIN_URL, encoded_data)
+    response = request.urlopen(newrequest)
+    print(response.geturl())
 
 
 def login_cookies():
     """working login
     """
     cj = cookielib.CookieJar()
-    opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+    opener = request.build_opener(request.HTTPCookieProcessor(cj))
     html = opener.open(LOGIN_URL).read()
     data = parse_form(html)
     data['email'] = LOGIN_EMAIL
     data['password'] = LOGIN_PASSWORD
-    encoded_data = urllib.urlencode(data)
-    request = urllib2.Request(LOGIN_URL, encoded_data)
-    response = opener.open(request)
-    print response.geturl()
+    encoded_data = urlencode(data)
+    newrequest = request.Request(LOGIN_URL, encoded_data)
+    response = opener.open(newrequest)
+    print(response.geturl())
     return opener
 
 
@@ -61,11 +61,11 @@ def login_firefox():
     """
     session_filename = find_ff_sessions()
     cj = load_ff_sessions(session_filename)
-    opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+    opener = request.build_opener(urllib2.HTTPCookieProcessor(cj))
     html = opener.open(COUNTRY_URL).read()
 
     tree = lxml.html.fromstring(html)
-    print tree.cssselect('ul#navbar li a')[0].text_content()
+    print(tree.cssselect('ul#navbar li a')[0].text_content())
     return opener
 
 
@@ -87,7 +87,7 @@ def load_ff_sessions(session_filename):
         try: 
             json_data = json.loads(open(session_filename, 'rb').read())
         except ValueError as e:
-            print 'Error parsing session JSON:', str(e)
+            print('Error parsing session JSON:%s'% str(e))
         else:
             for window in json_data.get('windows', []):
                 for cookie in window.get('cookies', []):
@@ -100,7 +100,7 @@ def load_ff_sessions(session_filename):
                         None, None, {})
                     cj.set_cookie(c)
     else:
-        print 'Session filename does not exist:', session_filename
+        print('Session filename does not exist:%s'% session_filename)
     return cj
 
 
