@@ -20,7 +20,7 @@ def main():
             try:
                 ajax = json.loads(html)
             except ValueError as e:
-                print e
+                print(e)
                 ajax = None
             else:
                 for record in ajax['records']:

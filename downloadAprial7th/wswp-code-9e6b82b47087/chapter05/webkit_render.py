@@ -27,7 +27,7 @@ def webkit_download(url):
 
 def parse(html):
     tree = lxml.html.fromstring(html)
-    print tree.cssselect('#result')[0].text_content()
+    print(tree.cssselect('#result')[0].text_content())
 
 
 def main(): 
@@ -36,7 +36,7 @@ def main():
     parse(webkit_download(url))
     return
 
-    print len(r.html)
+    print(len(r.html))
 
 
 if __name__ == '__main__':

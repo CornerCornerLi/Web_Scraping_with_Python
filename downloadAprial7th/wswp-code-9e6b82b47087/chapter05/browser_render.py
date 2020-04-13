@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+#sudo apt-get install python3-pyside for "PySide"
 import re
 import csv
 import time
@@ -37,7 +38,7 @@ class BrowserRender(QWebView):
             return self.html()
         else:
             # timed out
-            print 'Request timed out:', url
+            print('Request timed out:%s'% url)
 
     def html(self):
         """Shortcut to return the current HTML"""
@@ -70,7 +71,7 @@ class BrowserRender(QWebView):
             matches = self.find(pattern)
             if matches:
                 return matches
-        print 'Wait load timed out'
+        print('Wait load timed out')
 
 
 def main(): 
